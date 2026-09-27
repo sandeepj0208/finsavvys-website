@@ -29,7 +29,7 @@ assets/img/           Logo, favicon, social preview image
 The form uses [FormSubmit](https://formsubmit.co) (free, no account). The **first** submission sends an activation email to teamfinsavvys@gmail.com — click the link once and every later submission arrives by email.
 
 ## Common edits
-- **Founder photo:** add `assets/img/radhika.jpg`, then in `about/index.html` swap the `RV` monogram for the `<img>` tag shown in the comment there.
+- **Founder photo:** `assets/img/radhika.jpg` (800×1000). Replace the file with the same name to update it.
 - **Phone / email / social links:** appear in each page's footer and on the contact page — use GitHub's search (press `.` to open the web editor) to replace everywhere.
 - **Colors:** edit the `--navy`, `--gold`, `--cream` variables at the top of `assets/css/styles.css`.
 - **Disclaimer:** in every page footer; have it reviewed against your licensing/compliance requirements.
