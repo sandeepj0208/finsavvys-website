@@ -48,3 +48,49 @@
     if (ok && form) { ok.hidden = false; form.hidden = true; }
   }
 })();
+
+// Compounding calculator (illustrative only)
+(function () {
+  var root = document.getElementById('calc');
+  if (!root) return;
+  var m = root.querySelector('#c-monthly'), y = root.querySelector('#c-years'), r = root.querySelector('#c-rate');
+  var fmt = function (n) { return '$' + Math.round(n).toLocaleString('en-US'); };
+  var fv = function (pmt, years, rate) {
+    var i = rate / 100 / 12, n = years * 12;
+    return i === 0 ? pmt * n : pmt * ((Math.pow(1 + i, n) - 1) / i);
+  };
+  var fill = function (el) { el.style.setProperty('--p', ((el.value - el.min) / (el.max - el.min) * 100) + '%'); };
+  function update() {
+    var pmt = +m.value, years = +y.value, rate = +r.value;
+    [m, y, r].forEach(fill);
+    root.querySelector('#o-monthly').textContent = fmt(pmt);
+    root.querySelector('#o-years').textContent = years + ' yrs';
+    root.querySelector('#o-rate').textContent = rate + '%';
+    var total = fv(pmt, years, rate), contrib = pmt * years * 12, growth = Math.max(total - contrib, 0);
+    var early = fv(pmt, years + 10, rate);
+    root.querySelector('#o-total').textContent = fmt(total);
+    root.querySelector('#o-contrib').textContent = fmt(contrib);
+    root.querySelector('#o-growth').textContent = fmt(growth);
+    root.querySelector('#o-early').textContent = fmt(early - total);
+    var max = Math.max(total, 1);
+    root.querySelector('#b-contrib').style.width = (contrib / max * 100) + '%';
+    root.querySelector('#b-total').style.width = '100%';
+  }
+  [m, y, r].forEach(function (el) { el.addEventListener('input', update); });
+  update();
+})();
+
+// Count-up numbers
+(function () {
+  var els = document.querySelectorAll('[data-count]');
+  if (!els.length || !('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var el = e.target, end = +el.getAttribute('data-count'), suf = el.getAttribute('data-suffix') || '', t0 = null;
+      var step = function (t) { if (!t0) t0 = t; var p = Math.min((t - t0) / 1400, 1); el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3))) + suf; if (p < 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step); io.unobserve(el);
+    });
+  }, { threshold: .5 });
+  els.forEach(function (el) { io.observe(el); });
+})();
